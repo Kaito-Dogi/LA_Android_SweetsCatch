@@ -1,24 +1,32 @@
 package app.doggy.sweetscatch
 
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
     companion object {
-        //画像を表示する個数を決める変数。
-        private const val IMAGE_NUM: Int = 2
+        //最初に表示する画像の個数。
+        private const val IMAGE_NUM = 2
+
+        //制限時間。
+        private const val TIME = 15000
 
     }
 
     //カロリー（ポイント）を宣言。
     var kcal = 0
+
+    //残り時間の表示の仕方を宣言。
+    private val dataFormat: SimpleDateFormat = SimpleDateFormat("ss.SS", Locale.US)
 
     //画像の配列。
     val images: Array<Int> = arrayOf(
@@ -46,11 +54,50 @@ class MainActivity : AppCompatActivity() {
 
         //imageViewの配列。
         val imageViews: Array<ImageView> = arrayOf(
-            sweetsImageView1, sweetsImageView2, sweetsImageView3, sweetsImageView4,
-            sweetsImageView5, sweetsImageView6, sweetsImageView7, sweetsImageView8,
-            sweetsImageView9, sweetsImageView10, sweetsImageView11, sweetsImageView12,
-            sweetsImageView13, sweetsImageView14, sweetsImageView15, sweetsImageView16
+                sweetsImageView1, sweetsImageView2, sweetsImageView3, sweetsImageView4,
+                sweetsImageView5, sweetsImageView6, sweetsImageView7, sweetsImageView8,
+                sweetsImageView9, sweetsImageView10, sweetsImageView11, sweetsImageView12,
+                sweetsImageView13, sweetsImageView14, sweetsImageView15, sweetsImageView16
         )
+
+        //残り時間を表示する。
+        timeText.text = dataFormat.format(TIME * 1000.toLong())
+
+        //タイマーを設定する。
+        val timer: CountDownTimer = object : CountDownTimer(TIME.toLong(), 10) {
+
+            //タイマーが終了した時に呼ばれる。
+            override fun onFinish() {
+
+                //画像を初期化。
+                for (i in imageViews.indices) {
+
+                    //皿の画像を設定する。
+                    imageViews[i].setImageResource(R.drawable.dish)
+                    hasImage[i] = -1
+
+                }
+
+                //スタートボタンを表示する。
+                startButton.setBackgroundColor(Color.parseColor("#FF9800"))
+
+                //残り時間を表示する。
+                timeText.text = dataFormat.format(TIME * 1000.toLong())
+
+                //statusを更新。
+                status = 0
+
+            }
+
+            //カウントダウンされる毎に呼び出される。
+            override fun onTick(millisUntilFinished: Long) {
+
+                //残り時間を表示する。
+                timeText.text = dataFormat.format(millisUntilFinished)
+
+            }
+        }
+
 
         //初期設定。
         for (i in imageViews.indices) {
@@ -69,13 +116,18 @@ class MainActivity : AppCompatActivity() {
                 0 -> {
 
                     //画像の初期配置。
-                    for (imageNum in 0 until IMAGE_NUM) {
+                    for (i in 0 until IMAGE_NUM) {
                         displayImage(imageViews)
-
                     }
 
                     //ボタンの色を変更。
                     startButton.setBackgroundColor(Color.GRAY)
+
+                    //タイマーをスタート。
+                    timer.start()
+
+                    //カロリーをリセット。
+                    kcal = 0
 
                     //statusを更新。
                     status = 1
@@ -92,9 +144,9 @@ class MainActivity : AppCompatActivity() {
                 //カロリーを加算。
                 when(hasImage[index]) {
                     0 -> kcal += 10
-                    1 -> kcal += 20
-                    2 -> kcal += 50
-                    3 -> kcal += 100
+                    1 -> kcal += 35
+                    2 -> kcal += 100
+                    3 -> kcal += 250
                 }
 
                 kcalText.text = "$kcal kcal"
@@ -115,10 +167,10 @@ class MainActivity : AppCompatActivity() {
         //表示する画像を決める。
         imageIndex = Random.nextInt(100)
         when(imageIndex) {
-            in 0..49 -> imageIndex = 0
-            in 50..79 -> imageIndex = 1
-            in 80..94 -> imageIndex = 2
-            in 95..99 -> imageIndex = 3
+            in 0..69 -> imageIndex = 0
+            in 70..89 -> imageIndex = 1
+            in 90..96 -> imageIndex = 2
+            in 97..99 -> imageIndex = 3
         }
 
         //表示する場所を決める。
