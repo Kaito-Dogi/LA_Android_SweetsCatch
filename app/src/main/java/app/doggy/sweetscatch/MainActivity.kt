@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         )
 
         //残り時間を表示する。
-        timeText.text = dataFormat.format(TIME * 1000.toLong())
+        timeText.text = dataFormat.format(TIME.toLong())
 
         //タイマーを設定する。
         val timer: CountDownTimer = object : CountDownTimer(TIME.toLong(), 10) {
@@ -82,7 +82,7 @@ class MainActivity : AppCompatActivity() {
                 startButton.setBackgroundColor(Color.parseColor("#FF9800"))
 
                 //残り時間を表示する。
-                timeText.text = dataFormat.format(TIME * 1000.toLong())
+                timeText.text = dataFormat.format(TIME.toLong())
 
                 //statusを更新。
                 status = 0
