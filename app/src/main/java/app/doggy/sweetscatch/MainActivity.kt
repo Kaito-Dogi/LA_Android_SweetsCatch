@@ -1,5 +1,6 @@
 package app.doggy.sweetscatch
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -79,7 +80,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 //スタートボタンを表示する。
-                startButton.setBackgroundColor(Color.parseColor("#FF9800"))
+                startButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#FF9800"))
 
                 //残り時間を表示する。
                 timeText.text = dataFormat.format(TIME.toLong())
@@ -121,7 +122,7 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     //ボタンの色を変更。
-                    startButton.setBackgroundColor(Color.GRAY)
+                    startButton.backgroundTintList = ColorStateList.valueOf(Color.GRAY)
 
                     //タイマーをスタート。
                     timer.start()
