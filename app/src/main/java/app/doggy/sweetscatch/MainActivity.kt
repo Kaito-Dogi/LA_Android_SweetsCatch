@@ -2,6 +2,7 @@ package app.doggy.sweetscatch
 
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
 
     companion object {
         //最初に表示する画像の個数。
-        private const val IMAGE_NUM = 2
+        private const val IMAGE_NUM = 8
 
         //制限時間。
         private const val TIME = 15000
@@ -61,6 +62,11 @@ class MainActivity : AppCompatActivity() {
                 sweetsImageView13, sweetsImageView14, sweetsImageView15, sweetsImageView16
         )
 
+        //効果音を設定。
+        val startSound: MediaPlayer = MediaPlayer.create(applicationContext, R.raw.start)
+        val stopSound: MediaPlayer = MediaPlayer.create(applicationContext, R.raw.stop)
+        val catchSound: MediaPlayer = MediaPlayer.create(applicationContext, R.raw.sweets_catch)
+
         //残り時間を表示する。
         timeText.text = dataFormat.format(TIME.toLong())
 
@@ -69,6 +75,10 @@ class MainActivity : AppCompatActivity() {
 
             //タイマーが終了した時に呼ばれる。
             override fun onFinish() {
+
+                //効果音を再生。
+                stopSound.seekTo(0)
+                stopSound.start()
 
                 //画像を初期化。
                 for (i in imageViews.indices) {
@@ -108,13 +118,17 @@ class MainActivity : AppCompatActivity() {
             hasImage[i] = -1
 
             //クリックリスナの設定。
-            imageViews[i].setOnClickListener(CatchListener(i, imageViews))
+            imageViews[i].setOnClickListener(CatchListener(i, imageViews, catchSound))
         }
 
         startButton.setOnClickListener {
 
             when(status) {
                 0 -> {
+
+                    //効果音を再生。
+                    startSound.seekTo(0)
+                    startSound.start()
 
                     //画像の初期配置。
                     for (i in 0 until IMAGE_NUM) {
@@ -129,6 +143,7 @@ class MainActivity : AppCompatActivity() {
 
                     //カロリーをリセット。
                     kcal = 0
+                    kcalText.text = "$kcal kcal"
 
                     //statusを更新。
                     status = 1
@@ -137,10 +152,14 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private inner class CatchListener(val index: Int, val imageViews: Array<ImageView>): View.OnClickListener {
+    private inner class CatchListener(val index: Int, val imageViews: Array<ImageView>, val catchSound: MediaPlayer): View.OnClickListener {
         override fun onClick(view: View) {
 
             if (hasImage[index] != -1) {
+
+                //効果音を再生。
+                catchSound.seekTo(0)
+                catchSound.start()
 
                 //カロリーを加算。
                 when(hasImage[index]) {
